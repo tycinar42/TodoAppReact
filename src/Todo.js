@@ -1,26 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import Table from "./component/Table";
 
 function Todo() {
   const [todos, setTodos] = useState([]);
-  const [content, setContent] = useState();
-  const [date, setDate] = useState();
+  // const [content, setContent] = useState();
+  // const [date, setDate] = useState();
+  const [todo, setTodo] = useState({
+    content: null,
+    date: null,
+    state: false,
+  });
+  // const onChangeContent = (e) => {
+  //   setContent(e.target.value);
+  // };
+  // const onChangeDate = (e) => {
+  //   setDate(e.target.value);
+  // };
+useEffect(() => console.log('Her renderda çalışır'));
+useEffect(() => {console.log('Sayfa ilk yüklendiğinde çalışır')}, []);
 
-  const onChangeContent = (e) => {
-    setContent(e.target.value);
-  };
-  const onChangeDate = (e) => {
-    setDate(e.target.value);
-  };
+  const onChangeTodo = (e) => {
+    const {name, value} = e.target;
+    setTodo((t) => ({...t, [name]: value, state: false}));
+  }
+  // const addTodo = (e) => {
+  //   setTodos([
+  //     ...todos,
+  //     {
+  //       content: content,
+  //       date: date,
+  //     },
+  //   ]);
+  // };
   const addTodo = (e) => {
-    setTodos([
-      ...todos,
-      {
-        content: content,
-        date: date,
-      },
-    ]);
+    // setTodo((t) => ({...t, state: false}));
+    setTodos([...todos, todo]);
+  };  
+  const deleteTodo = (e) => {
+    let index = e.target.value;
+    let list = [...todos];
+    list.splice(index, 1);
+    setTodos(list);
   };
+  const editTodo = (e) => {
+    let index = e.target.value
+    let list = [...todos];
+    let newTodo = list[index];
+    newTodo.state = true;
+    setTodos(list);
+  }
 
   return (
     <div className="w-full h-full container flex-col justify-center items-center">
@@ -30,17 +59,17 @@ function Todo() {
           <input
             type="text"
             id="content"
-            name="contet"
+            name="content"
             placeholder="Lütfen Bir Todo Giriniz"
             className="w-50 rounded-md border px-2 my-3 "
-            onChange={onChangeContent}
+            onChange={onChangeTodo}
           ></input>
           <input
             type="date"
             id="date"
             name="date"
             className="w-auto border rounded-md"
-            onChange={onChangeDate}
+            onChange={onChangeTodo}
           ></input>
 
           <button
@@ -55,37 +84,7 @@ function Todo() {
       </div>
 
       <div>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Sıra No</th>
-              <th scope="col">Todo</th>
-              <th scope="col">Tarih</th>
-              <th scope="col">Durum</th>
-              <th scope="col" className="text-center">
-                İşlemler
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {todos.map((data, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{data.content}</td>
-                  <td>{data.date}</td>
-                  <td>false</td>
-                  <td className="flex justify-center">
-                    <div className="text-center">
-                      <button className="btn btn-danger w-20 mx-1">Sil</button>
-                      <button className="btn btn-warning w-20 ">Düzenle</button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <Table head = {['Sıra No', 'Todo', 'Tarih', 'Durum', 'İşlemler']} todos = {todos} editTodo = {editTodo} deleteTodo = {deleteTodo}></Table>
       </div>
     </div>
   );
